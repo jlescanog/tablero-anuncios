@@ -1,16 +1,12 @@
 <script setup>
-// IMPORTAMOS LA UTILIDAD PARA CREAR VARIABLES REACTIVAS
 import { ref } from 'vue';
 
-// --- ESTADO DE LA APLICACIÓN ---
-// 'documentoActual': Guarda el link del documento que se está viendo. Si es null, muestra el menú.
-// 'tituloActual': Guarda el nombre del botón que se presionó para mostrarlo arriba.
+// --- ESTADO ---
 const documentoActual = ref(null);
 const tituloActual = ref('');
 
-// --- CONFIGURACIÓN DE BOTONES ---
-// Aquí es donde cambiarás los links en el futuro.
-// IMPORTANTE: Asegúrate de que los links terminen en '/preview' para que se vean bien en celulares.
+// --- TUS BOTONES (Versión Colorida) ---
+// Actualiza los links con los tuyos reales que terminen en /preview
 const listaDeBotones = [
   { 
     id: 1, 
@@ -43,21 +39,18 @@ const listaDeBotones = [
     color: '#4285F4', // Azul Google
     textoOscuro: true, // Para que la letra sea negra en fondo amarillo
     url: 'https://docs.google.com/spreadsheets/d/1hCugqSpqz__vdScZk9ItBar0PLPUdbTDfSUeoTn__qo/preview?gid=0#gid=0' 
-  }
+}
 ];
 
 // --- FUNCIONES ---
-
-// Función para abrir el documento cuando tocan un botón
 const abrirDocumento = (item) => {
   tituloActual.value = item.texto;
   documentoActual.value = item.url;
-  window.scrollTo(0, 0); // Sube la pantalla al inicio por si estaban abajo
+  window.scrollTo(0, 0);
 };
 
-// Función para el botón "Regresar"
 const volverAlMenu = () => {
-  documentoActual.value = null; // Al poner null, la web sabe que debe mostrar el menú de nuevo
+  documentoActual.value = null;
   tituloActual.value = '';
 };
 </script>
@@ -66,6 +59,11 @@ const volverAlMenu = () => {
   <main class="contenedor-principal">
     
     <div v-if="!documentoActual" class="menu-vista">
+      
+      <div class="banner-container">
+        <img src="/banner.jpg" alt="Imagen de la congregación" class="banner-img" />
+      </div>
+
       <header class="encabezado">
         <h1>Tablero de Anuncios</h1>
         <p>Congregación Vilcas</p>
@@ -89,7 +87,6 @@ const volverAlMenu = () => {
     </div>
 
     <div v-else class="documento-vista">
-      
       <div class="barra-navegacion">
         <button @click="volverAlMenu" class="boton-volver">
           ← Regresar
@@ -109,24 +106,40 @@ const volverAlMenu = () => {
 </template>
 
 <style scoped>
-/* --- ESTILOS VISUALES (CSS) --- */
+/* --- ESTILOS CSS --- */
 
-/* Estilo base de toda la app */
 .contenedor-principal {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 600px; /* Ancho máximo similar a un celular grande */
-  margin: 0 auto;   /* Centrado en pantalla de PC */
+  max-width: 600px;
+  margin: 0 auto;
   min-height: 100vh;
-  background-color: #f0f2f5;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1); /* Sombra suave a los lados en PC */
+  background-color: #f8f9fa; /* Fondo gris muy claro */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  /* Bordes redondeados para todo el contenedor en PC */
+  border-radius: 16px; 
+  overflow: hidden; /* Importante para que el banner respete las esquinas redondeadas */
 }
 
-/* Estilos del Encabezado */
+/* ESTILOS DEL NUEVO BANNER */
+.banner-container {
+  width: 100%;
+  height: 180px; /* Altura fija del banner. Ajústala si quieres. */
+  background-color: #e0e0e0; /* Color mientras carga */
+}
+
+.banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Esto hace que la imagen se recorte para llenar sin estirarse */
+  object-position: center; /* Centra el foco de la imagen */
+  display: block;
+}
+
+/* ESTILOS DEL ENCABEZADO (Ajustado) */
 .encabezado {
   text-align: center;
-  padding: 2.5rem 1rem;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 2rem 1rem 1rem 1rem; /* Menos padding abajo */
+  background-color: #fff;
 }
 
 .encabezado h1 {
@@ -137,18 +150,24 @@ const volverAlMenu = () => {
   text-transform: uppercase;
 }
 
-/* Estilos de la lista de botones */
+.encabezado p {
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+/* ESTILOS DE BOTONES COLORIDOS */
 .lista-botones {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
   padding: 1.5rem;
+  background-color: #fff; /* Fondo blanco para el área de botones */
 }
 
 .boton-anuncio {
   border: none;
   padding: 1.5rem;
-  font-size: 1.3rem; /* Letra grande para lectura fácil */
+  font-size: 1.2rem;
   font-weight: bold;
   border-radius: 12px;
   cursor: pointer;
@@ -159,14 +178,14 @@ const volverAlMenu = () => {
 }
 
 .boton-anuncio:active {
-  transform: scale(0.97); /* Efecto de "presionar" */
+  transform: scale(0.97);
 }
 
-/* Estilos de la vista de documento */
+/* VISOR DE DOCUMENTOS */
 .documento-vista {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  height: 100vh;
 }
 
 .barra-navegacion {
@@ -176,7 +195,6 @@ const volverAlMenu = () => {
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   z-index: 10;
 }
 
@@ -187,7 +205,6 @@ const volverAlMenu = () => {
   padding: 0.6rem 1.2rem;
   border-radius: 20px;
   font-weight: bold;
-  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -196,20 +213,19 @@ const volverAlMenu = () => {
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 0.9rem;
-  opacity: 0.9;
 }
 
-/* El visor del documento */
 .visor-iframe {
   width: 100%;
-  flex-grow: 1; /* Hace que ocupe todo el espacio sobrante */
+  flex-grow: 1;
   background: white;
 }
 
 .pie-pagina {
   text-align: center;
-  color: #888;
+  color: #999;
   font-size: 0.9rem;
-  padding-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #fff;
 }
 </style>
