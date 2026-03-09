@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue';
+
 defineProps({
   titulo: {
     type: String,
@@ -11,6 +13,11 @@ defineProps({
 });
 
 const emit = defineEmits(['volver']);
+const cargando = ref(true);
+
+const alCargar = () => {
+  cargando.value = false;
+};
 
 const volver = () => {
   emit('volver');
@@ -20,17 +27,24 @@ const volver = () => {
 <template>
   <div class="documento-vista">
     <div class="barra-navegacion">
-      <button @click="volver" class="boton-volver">
+      <button @click="volver" class="boton-volver" aria-label="Volver al menú">
         ← Regresar
       </button>
       <span class="titulo-doc">{{ titulo }}</span>
     </div>
 
+    <div v-if="cargando" class="cargando-contenedor">
+      <div class="spinner"></div>
+      <p>Cargando documento...</p>
+    </div>
+
     <iframe 
       :src="url" 
       class="visor-iframe" 
+      :class="{ 'oculto': cargando }"
       frameborder="0" 
-      allowfullscreen>
+      allowfullscreen
+      @load="alCargar">
     </iframe>
   </div>
 </template>
@@ -41,6 +55,7 @@ const volver = () => {
   flex-direction: column;
   height: 100vh;
   animation: slideIn 0.3s ease-out;
+  background-color: #fff;
 }
 
 .barra-navegacion {
@@ -62,11 +77,11 @@ const volver = () => {
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: transform 0.1s;
 }
 
-.boton-volver:hover {
-  background-color: #f0f0f0;
+.boton-volver:active {
+  transform: scale(0.95);
 }
 
 .titulo-doc {
@@ -77,10 +92,40 @@ const volver = () => {
   font-weight: 500;
 }
 
+.cargando-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  color: #666;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
 .visor-iframe {
   width: 100%;
   flex-grow: 1;
   background: white;
+  border: none;
+}
+
+.oculto {
+  visibility: hidden;
+  height: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes slideIn {

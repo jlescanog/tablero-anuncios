@@ -21,7 +21,7 @@ export const listaDeBotones = [
         id: 4,
         texto: 'Servicio del Campo',
         color: '#4285F4', // Azul Google
-        textoOscuro: true, // Para que la letra sea negra en fondo amarillo
+        textoOscuro: false, // El texto debe ser blanco sobre azul para mejor contraste
         url: 'https://docs.google.com/spreadsheets/d/1hCugqSpqz__vdScZk9ItBar0PLPUdbTDfSUeoTn__qo/preview'
     },
     {

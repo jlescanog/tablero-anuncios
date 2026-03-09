@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Menu from './components/Menu.vue';
 import DocumentViewer from './components/DocumentViewer.vue';
 
@@ -11,13 +11,30 @@ const tituloActual = ref('');
 const abrirDocumento = (item) => {
   tituloActual.value = item.texto;
   documentoActual.value = item.url;
+  
+  // Añadir entrada al historial para que el botón "atrás" funcione
+  window.history.pushState({ documento: true }, '');
   window.scrollTo(0, 0);
 };
 
 const volverAlMenu = () => {
   documentoActual.value = null;
   tituloActual.value = '';
+  // Si volvemos manualmente, nos aseguramos de no dejar estados huérfanos
+  if (window.history.state?.documento) {
+    window.history.back();
+  }
 };
+
+// Escuchar el botón atrás del navegador
+onMounted(() => {
+  window.onpopstate = (event) => {
+    if (!event.state?.documento) {
+      documentoActual.value = null;
+      tituloActual.value = '';
+    }
+  };
+});
 </script>
 
 <template>
@@ -39,8 +56,14 @@ const volverAlMenu = () => {
 </template>
 
 <style scoped>
+:root {
+  --color-fondo: #f8f9fa;
+  --color-primario: #2c3e50;
+  --sombra: 0 4px 20px rgba(0,0,0,0.08);
+}
+
 .contenedor-principal {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   max-width: 600px;
   margin: 0 auto;
   min-height: 100vh;
@@ -54,7 +77,7 @@ const volverAlMenu = () => {
 /* Transiciones globales */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 .fade-enter-from,
