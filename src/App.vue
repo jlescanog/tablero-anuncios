@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import Menu from './components/Menu.vue';
 import DocumentViewer from './components/DocumentViewer.vue';
+import InstallBanner from './components/InstallBanner.vue';
 
 // --- ESTADO ---
 const documentoActual = ref(null);
@@ -52,6 +53,9 @@ onMounted(() => {
         @volver="volverAlMenu" 
       />
     </Transition>
+    
+    <!-- Notificación de Instalación PWA -->
+    <InstallBanner />
   </main>
 </template>
 
